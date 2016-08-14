@@ -1,0 +1,28 @@
+<ion-view title="Manage queue" hide-back-button="true" id="page9" class=" ">
+    <ion-content padding="true" class="has-header">
+        <style media="screen">
+          .customerNumber{
+            text-align: center;
+          }
+          .customerNumber h1{
+            color: #25cf6e;
+          }
+          .customerNumber h3{
+            color: #000;
+          }
+        </style>
+        <div class="customerNumber">
+          <!-- <h3>Customer number</h3>
+          <h1>{{customerNumber}}</h1> -->
+          <a ng-click="clickNext()" style="font-weight:500;font-size:50px;" class=" button button-balanced button-large button-block ">Next</a>
+        </div>
+        <a ui-sref="queueAnalytics" id="manageQueue-button14" class=" button button-positive  button-block icon-right ion-ios-analytics ">Go to analytics portal</a>
+        <a ui-sref="queuePreferences" id="manageQueue-button16" class=" button button-positive  button-block icon-right ion-android-settings ">Queue preferences</a>
+        <a ui-sref="upgradeSubscription" id="manageQueue-button18" class=" button button-positive  button-block icon-right ion-android-arrow-up ">Upgrade subscription plan</a>
+
+        <!-- Show only if trial -->
+        <p id="manageQueue-markdown7" style="color:#e64545;font-size:20px;" class=" ">
+            {{ifTrial}}
+        </p>
+    </ion-content>
+</ion-view>

@@ -1,0 +1,66 @@
+<ion-view title="Create own queue" id="page3" class=" ">
+    <ion-content padding="true" class="has-header">
+        <form id="createOwnQueue-form2" class="list ">
+            <label class="item item-input item-stacked-label " id="createOwnQueue-input5">
+                <span class="input-label">Name of your place/queue</span>
+                <input type="text" placeholder="Burger place" ng-model='queue.name'>
+            </label>
+            <label class="item item-input item-stacked-label " id="createOwnQueue-input7">
+                <span class="input-label">Your name</span>
+                <input type="text" placeholder="John Cena" ng-model='queue.adminName'>
+            </label>
+            <label class="item item-input item-stacked-label " id="createOwnQueue-input8">
+                <span class="input-label">City</span>
+                <input type="text" placeholder="Helsinki" ng-model='queue.city'>
+            </label>
+            <label class="item item-input item-stacked-label " id="createOwnQueue-input9">
+                <span class="input-label">Address</span>
+                <input type="text" placeholder="Korkeavuorenkatu 35" ng-model='queue.address'>
+            </label>
+            <label class="item item-input item-stacked-label " id="createOwnQueue-input10">
+                <span class="input-label">ZIP-code</span>
+                <input type="text" placeholder="00130" ng-model='queue.zip'>
+            </label>
+            <label class="item item-input item-stacked-label " id="createOwnQueue-input12">
+                <span class="input-label">Your website</span>
+                <input type="text" placeholder="www.webstie.com" ng-model='queue.website'>
+            </label>
+            <label class="item item-select " id="createOwnQueue-select2">
+                <span class="input-label">Category</span>
+                <select ng-model='queue.category'>
+                    <option value="restaurant">Restaurant</option>
+                    <option value="cafe">Cafe</option>
+                    <option value="shop">Shop</option>
+                    <option value="grocery_store">Grocery store</option>
+                    <option value="public_service">Public service</option>
+                    <option value="consultancy">Consultancy</option>
+                    <option value="support">Customer support</option>
+                    <option value="bank">Bank</option>
+                    <option value="event">Event</option>
+                    <option value="other">Other</option>
+                </select>
+            </label>
+            <label class="item item-input item-stacked-label " id="createOwnQueue-input11">
+                <span class="input-label">Phone number</span>
+                <input type="tel" placeholder="040 123 45678" ng-model='queue.phone'>
+            </label>
+            <label class="item item-input item-stacked-label " id="createOwnQueue-input4">
+                <span class="input-label">Email</span>
+                <input type="email" placeholder="me@company.com" ng-model='queue.email'>
+            </label>
+            <label class="item item-input item-stacked-label " id="createOwnQueue-input6">
+                <span class="input-label">Password</span>
+                <input type="password" placeholder="My password" ng-model='queue.password'>
+            </label>
+            <label class="item item-input item-stacked-label " id="createOwnQueue-input6">
+                <span class="input-label">Repeat password</span>
+                <input type="password" placeholder="My password again" ng-model='queue.passwordRepeat'>
+            </label>
+        </form>
+        <p id="createOwnQueue-markdown2" style="color:#000000;" class=" ">By clicking this button you agree with our
+            <a ui-sref="termsOfUse"><strong>Terms of use</strong></a>
+        </p>
+        <button ng-click='createQueueBtn()' id="createOwnQueue-button6" class=" button button-positive  button-block ">Create your place</button>
+        <div class="spacer" style="width: 300px; height: 37px;"></div>
+    </ion-content>
+</ion-view>

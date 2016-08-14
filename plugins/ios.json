@@ -1,0 +1,53 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "cordova-plugin-image-picker": {
+            "PACKAGE_NAME": "com.joinly.app"
+        },
+        "cordova-plugin-printer": {
+            "PACKAGE_NAME": "com.joinly.app"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.joinly.app"
+        },
+        "cordova-plugin-inappbrowser": {
+            "PACKAGE_NAME": "com.joinly.app"
+        },
+        "phonegap-plugin-barcodescanner": {
+            "PACKAGE_NAME": "com.joinly.app"
+        },
+        "cordova-plugin-geolocation": {
+            "PACKAGE_NAME": "com.joinly.app"
+        },
+        "com.telerik.plugins.wkwebview": {
+            "WKWEBVIEW_SERVER_PORT": "12344",
+            "PACKAGE_NAME": "com.joinly.app"
+        },
+        "com.telerik.plugins.nativepagetransitions": {
+            "PACKAGE_NAME": "com.joinly.app"
+        },
+        "org.pbernasconi.progressindicator": {
+            "PACKAGE_NAME": "com.joinly.app"
+        },
+        "cordova-plugin-http": {
+            "PACKAGE_NAME": "com.joinly.app"
+        }
+    },
+    "dependent_plugins": {
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "com.joinly.app"
+        },
+        "cordova-plugin-webserver": {
+            "PACKAGE_NAME": "com.joinly.app"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.joinly.app"
+        }
+    }
+}

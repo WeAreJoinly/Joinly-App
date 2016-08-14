@@ -1,0 +1,36 @@
+<ion-view title="Scan QR code" id="page4" class=" ">
+    <ion-content padding="true" scroll="false" class="has-header">
+        <style media="screen">
+          #map{
+            height: calc(100% - 260px);
+            width: 100%;
+            position: absolute;
+            top: 125px;
+            left: 0px;
+          }
+          .queueIdEnter{
+            position: absolute;
+            bottom: 0px;
+            width: 100%;
+            left: 0px;
+          }
+        </style>
+        <div class="spacer" style="width: 300px; height: 40px;"></div>
+        <div style="margin-right:-20px;">
+            <a ng-click="scanBarcode()" id="scanQRCode-button7" style="left:-10px;font-size:100px;text-align:center;width:100%;" class=" button button-energized  button-clear takePhoto">Scan</a>
+        </div>
+
+        <div id="map"></div>
+
+        <div class="queueIdEnter">
+          <form id="scanQRCode-form8" class="list enterQueueId">
+              <label class="item item-input enterQueueId" id="scanQRCode-input14">
+                  <span class="input-label">Enter queue ID</span>
+                  <input type="text" placeholder="0000" ng-model="inputData.enterId">
+              </label>
+          </form>
+          <a ng-click="enterIdBtn()" class="button button-positive button-full button-outline">Enter</a>
+        </div>
+
+    </ion-content>
+</ion-view>

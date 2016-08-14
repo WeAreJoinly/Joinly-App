@@ -1,0 +1,32 @@
+{
+  "name": "joinly",
+  "version": "1.0.0",
+  "description": "Joinly App",
+  "dependencies": {
+    "gulp": "^3.5.6",
+    "gulp-concat": "^2.2.0",
+    "gulp-minify-css": "^0.3.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-sass": "^2.0.4"
+  },
+  "devDependencies": {
+    "bower": "^1.3.3",
+    "gulp-util": "^2.2.14",
+    "shelljs": "^0.3.0"
+  },
+  "cordovaPlatforms": [
+    "ios",
+    "android"
+  ],
+  "cordovaPlugins": [
+    "cordova-plugin-image-picker",
+    "cordova-plugin-printer",
+    "cordova-plugin-whitelist",
+    "cordova-plugin-inappbrowser",
+    "cordova-plugin-wkwebview",
+    {
+      "locator": "https://github.com/Telerik-Verified-Plugins/NativePageTransitions#0.6.5",
+      "id": "com.telerik.plugins.wkwebview"
+    }
+  ]
+}
