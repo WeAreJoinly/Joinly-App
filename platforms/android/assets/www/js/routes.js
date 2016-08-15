@@ -22,10 +22,10 @@ angular.module('app.routes', [])
     controller: 'signupCtrl'
   })
 
-  .state('scanQRCode', {
-    url: '/scanqr',
-    templateUrl: 'templates/scanQRCode.html',
-    controller: 'scanQRCodeCtrl'
+  .state('joinQueue', {
+    url: '/joinQueue',
+    templateUrl: 'templates/joinQueue.html',
+    controller: 'joinQueueCtrl'
   })
 
   .state('welcomeToTheQueue', {

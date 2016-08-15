@@ -232,47 +232,49 @@ angular.module('app.controllers', [])
   }
 })
 
-.controller('scanQRCodeCtrl', function($scope, $state, $cordovaBarcodeScanner, $ionicPopup, $cordovaGeolocation, $cordovaProgress) {
+.controller('joinQueueCtrl', function($scope, $state, $cordovaBarcodeScanner, $ionicPopup, $cordovaGeolocation, $cordovaProgress) {
 
   $cordovaProgress.showSimple(true, "Loading...");
 
-  var posOptions = {timeout: 10000, enableHighAccuracy: false};
-  $cordovaGeolocation
-    .getCurrentPosition(posOptions)
-    .then(function (position) {
-      var lat  = position.coords.latitude
-      var long = position.coords.longitude
+  function setUpMap(){
+    var posOptions = {timeout: 10000, enableHighAccuracy: false};
+    $cordovaGeolocation
+      .getCurrentPosition(posOptions)
+      .then(function (position) {
+        var lat  = position.coords.latitude
+        var long = position.coords.longitude
 
-      var myCenter = {lat: lat, lng: long};
+        var myCenter = {lat: lat, lng: long};
 
-      var map = new google.maps.Map(document.getElementById('map'), {
-        center: myCenter,
-        scrollwheel: true,
-        zoom: 11
+        var map = new google.maps.Map(document.getElementById('map'), {
+          center: myCenter,
+          scrollwheel: true,
+          zoom: 11
+        });
+
+        var marker=new google.maps.Marker({
+          position:myCenter,
+        });
+
+        marker.setMap(map);
+
+        //TODO load all queues from database
+        //TODO load queues as pins to the map
+
+        $cordovaProgress.hide()
+
+      }, function(err) {
+        // error
+        $cordovaProgress.hide();
+        console.error(err);
+        $ionicPopup.alert({
+            title: 'Error',
+            template: "Error getting user's geolocation"
+        });
       });
+  }
 
-      var marker=new google.maps.Marker({
-        position:myCenter,
-      });
-
-      marker.setMap(map);
-
-      //TODO load all queues from database
-      //TODO load queues as pins to the map
-
-      $cordovaProgress.hide()
-
-    }, function(err) {
-      // error
-      $cordovaProgress.hide();
-      console.error(err);
-      $ionicPopup.alert({
-          title: 'Error',
-          template: "Error getting user's geolocation"
-      });
-    });
-
-  //var uid = firebase.auth().currentUser.uid;
+  var uid = firebase.auth().currentUser.uid;
 
   $scope.inputData = {};
   var inputData = $scope.inputData;
@@ -340,7 +342,7 @@ angular.module('app.controllers', [])
    }
 })
 
-.controller('queueCtrl', function($scope, $state, $ionicPopup) {
+.controller('queueCtrl', function($scope, $state, $ionicPopup, $cordovaGeolocation) {
   //Init socket.io
   var socket = io('http://joinly.org/');
   socket.on('connect', function(){
@@ -349,66 +351,101 @@ angular.module('app.controllers', [])
     firebase.auth().onAuthStateChanged(function(user){
       if (user) {
         var uid = user.uid;
-
-        //User is signed in
-        $scope.placeInQueue = 0;
-        $scope.timeLeft = "This function is still in development";
-        //Get user's on going queue
         database.ref('user/' + user.uid + '/ongoingQueue').on('value', function(snapshot) {
           var queueId = snapshot.val();
           if(queueId){
-            //Get queue logo
-            database.ref('queue/'+queueId+'/logoUrl').on('value', function(snapshot){
-              var logoUrl = snapshot.val();
-              $scope.queueLogo = logoUrl || "https://pbs.twimg.com/profile_images/435780569687810048/I9j3va7e.png";
-            });
+            var queueDatabaseRef = database.ref('queue/'+queueId);
+            queueDatabaseRef.on('value', function(snapshot){
+              var queue = snapshot.val();
 
-            $scope.exitQueue = function(){
-              //User wants to quit the queue
-              socket.emit('leave', { uid: user.uid, queue: queueId});
-              //Go to rate view
-              $state.go('homeScreen'); //TODO rate screen
-            }
+              //Get queue's logo
+              $scope.queueLogo = queue.logoUrl || "http://vignette4.wikia.nocookie.net/destinypedia/images/b/b9/Unknown_License.png/revision/latest?cb=20130810221651";
 
-            //Get place in queue
-            database.ref('queue/'+queueId+'/queue/'+user.uid).on('value', function(snapshot) {
-              var placeInQueue = snapshot.val();
-              $scope.placeInQueue = placeInQueue;
-              
-              database.ref('queue/'+queueId+'/queue').on('child_changed', function(data) {
-                $scope.placeInQueue = data[user.uid];
-              });
+              //Get place in queue
+              updatePlaceInQueue(queue);
 
+              //Get estimated time per customer from server
+              updateEstimatedTimeLeft(queueId, $scope.placeInQueue);
+
+              //React on changes in the queue
               //Sync with server / socket.io
-              socket.on(queueId, function (data) {
-                console.log(data);
-                if(data.uid == user.uid){
-                  //This is about this user
-                  if (data.do == 'removeFromQueue') {
-                    //User must be removed from the queue
-                    //Go to rate view
-                    $state.go('homeScreen'); //TODO rate screen
+              socket.on(uid, function (data) {
+                if (data.action == 'place') {
+                  $scope.placeInQueue = data.data;
+                  if($scope.placeInQueue == 0){
+                    //You are now out of queue
+                    //TODO Rate view
+                    $state.go('homeScreen');
+                  }else if($scope.placeInQueue == 1){
+                    //You are now first in queue
+                    $scope.timeLeft = "0 minutes";
+                    //MyTurn view
+                    $ionicPopup.alert({
+                      title: "Your turn!",
+                      template: "Just go and get whatever you been queueing for :)"
+                    });
+                  }else if($scope.placeInQueue == 2){
+                    //You are next in the queue
+                    updateEstimatedTimeLeft(queueId, $scope.placeInQueue);
+                  }else if($scope.placeInQueue == 4){ //TODO What is the size of buffer queue?
+                    //You should now join buffer queue
+                    updateEstimatedTimeLeft(queueId, $scope.placeInQueue);
                   }else{
-                    //Unkonow action
+                    updateEstimatedTimeLeft(queueId, $scope.placeInQueue);
                   }
                 }else{
-                  //This is for another user
-                  //So not interesting for this user
+                  //Unkonow action
                 }
               });
 
-            });//End of firebase on value
-          }else{
-            //No queue set for this user
-            $state.go('homeScreen');
-          }
+              function updatePlaceInQueue(neededQueue){
+                for (var placeInQueue in neededQueue.queue) {
+                  if (neededQueue.queue.hasOwnProperty(placeInQueue)) {
+                    if(neededQueue.queue[placeInQueue] == uid){
+                      $scope.placeInQueue = placeInQueue;
+                    }
+                  }
+                }
+              }
+              function updateEstimatedTimeLeft(neededQueueId, userPlaceInQueue){
+                cordovaHTTP.get("http://joinly.org/timePerCustomerInQueue", {
+                  queue: neededQueueId
+                }, {}, function(response) {
+                    console.log(response.status);
+                    try {
+                        var res = JSON.parse(response.data);
+                        console.log(res);
+                        //Get time left
+                        var timeLeft = res.minutes * userPlaceInQueue;
+                        //Display time left
+                        $scope.timeLeft = "~ " + timeLeft + " minutes";
+                    } catch(e) {
+                        console.error("JSON parsing error");
+                        $scope.timeLeft = "Error in application";
+                    }
+                }, function(response) {
+                    console.error(response.error);
+                    $scope.timeLeft = "Error in application";
+                });
+              }
+
+              //TODO Exit queue button
+
+            });
+
+
+            //TODO track user's location in background
+            //Send location to the server
+            //Let server handle the rest
+
+
+          }//--> end of if(queueId)
         });
       }else{
         //No user signed in
-        $state.go('homeScreen');
       }
-    }); // ---> onAuthStateChanged() end
-  }); // ---> Socket.io on connect end
+    });//--> End of onAuthStateChanged
+  });//--> End of socket.io on connect
 })
 
 .controller('rateServiceCtrl', function($scope) {

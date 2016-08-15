@@ -10,6 +10,7 @@
 
     <script src="lib/ionic-service-core/ionic-core.js"></script>
     <script src="lib/ionic-service-analytics/ionic-analytics.js"></script>
+    <script src="../plugins/cordova-plugin-webserver/www/cordovaHTTP.js" charset="utf-8"></script>
 
     <!-- ng-cordova OAuth -->
     <script src="lib/ng-cordova-oauth/dist/ng-cordova-oauth.min.js"></script>
@@ -70,9 +71,11 @@
     <!-- Socket.io -->
     <script src="lib/socket.io.js"></script>
 
+    <!-- Maps -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCqABH3T4LpYzNmOef8udc3QlaEiCq4wq8" async defer></script>
+
     <!-- Firebase -->
     <script src="lib/firebase.js"></script>
-
     <script>
       // Initialize Firebase
       var config = {
@@ -125,20 +128,34 @@
           return bb.getBlob(mimeString);
       }
 
+      // Wait for device API libraries to load
+      //
+      function onLoad() {
+          document.addEventListener("deviceready", onDeviceReady, false);
+      }
+
+      // device APIs are available
+      //
+      function onDeviceReady() {
+          // Register the event listener
+          document.addEventListener("backbutton", onBackKeyDown, false);
+      }
+
+      // Handle the back button
+      //
+      function onBackKeyDown() {
+      }
     </script>
 
   </head>
-  <body ng-app="app" animation="slide-left-right-ios7">
-  <div>
+  <body ng-app="app" animation="slide-left-right-ios7" onload="onLoad()" class="platform-android platform-cordova platform-webview">
     <div>
-        <ion-nav-bar class="bar-stable">
-            <ion-nav-back-button class="button-icon icon ion-ios-arrow-back"></ion-nav-back-button>
-        </ion-nav-bar>
-        <ion-nav-view></ion-nav-view>
+      <div>
+          <ion-nav-bar class="bar-stable">
+              <ion-nav-back-button class="button-icon icon ion-ios-arrow-back"></ion-nav-back-button>
+          </ion-nav-bar>
+          <ion-nav-view></ion-nav-view>
+      </div>
     </div>
-  </div>
-
-  <!-- Maps -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCqABH3T4LpYzNmOef8udc3QlaEiCq4wq8" async defer></script>
   </body>
 </html>
