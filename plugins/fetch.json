@@ -72,9 +72,7 @@
             "id": "cordova-plugin-wkwebview"
         },
         "is_top_level": true,
-        "variables": {
-            "WKWEBVIEW_SERVER_PORT": "12344"
-        }
+        "variables": {}
     },
     "cordova-plugin-webserver": {
         "source": {

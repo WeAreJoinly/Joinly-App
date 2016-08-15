@@ -11,41 +11,75 @@ angular.module('app.routes', [])
 
 
       .state('homeScreen', {
-    url: '/home',
+    url: '/homeScreen',
     templateUrl: 'templates/homeScreen.html',
+    nativeTransitions: {
+      "type": "flip",
+      "direction": "left"
+    },
     controller: 'homeScreenCtrl'
   })
 
   .state('signup', {
     url: '/signup',
     templateUrl: 'templates/signup.html',
+    nativeTransitions: {
+      "type": "flip",
+      "direction": "left"
+    },
     controller: 'signupCtrl'
+  })
+
+  .state('signin', {
+    url: '/signin',
+    templateUrl: 'templates/signin.html',
+    nativeTransitions: {
+      "type": "flip",
+      "direction": "left"
+    },
+    controller: 'signinCtrl'
   })
 
   .state('joinQueue', {
     url: '/joinQueue',
     templateUrl: 'templates/joinQueue.html',
+    nativeTransitions: {
+      "type": "flip",
+      "direction": "left"
+    },
     controller: 'joinQueueCtrl'
   })
 
-  .state('welcomeToTheQueue', {
-    url: '/queue',
-    templateUrl: 'templates/welcomeToTheQueue.html',
+  .state('inQueue', {
+    url: '/inQueue',
+    templateUrl: 'templates/inQueue.html',
+    nativeTransitions: {
+      "type": "flip",
+      "direction": "left"
+    },
     controller: 'queueCtrl'
   })
 
-  .state('canYouPleaseRateTheService', {
+  .state('rateService', {
     url: '/rate',
-    templateUrl: 'templates/canYouPleaseRateTheService.html',
+    templateUrl: 'templates/rateService.html',
+    nativeTransitions: {
+      "type": "flip",
+      "direction": "left"
+    },
     controller: 'rateServiceCtrl'
   })
 
   .state('termsOfUse', {
     url: '/terms',
     templateUrl: 'templates/termsOfUse.html',
+    nativeTransitions: {
+      "type": "flip",
+      "direction": "left"
+    },
     controller: 'termsOfUseCtrl'
-  })
-
-  $urlRouterProvider.otherwise('/home')
+  });
+  
+  $urlRouterProvider.otherwise('/signin')
 
 });

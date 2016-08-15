@@ -1,6 +1,6 @@
 angular.module('app', ['ionic', 'ngCordova', 'ionic.service.core', 'ionic.service.analytics', 'app.controllers', 'app.routes', 'app.services', 'app.directives', 'ngCordovaOauth'])
 
-.run(function($ionicPlatform, $ionicAnalytics) {
+.run(function($ionicPlatform, $ionicAnalytics, $state) {
   $ionicPlatform.ready(function() {
     //Register analytics
     $ionicAnalytics.register();
@@ -12,7 +12,7 @@ angular.module('app', ['ionic', 'ngCordova', 'ionic.service.core', 'ionic.servic
     if (window.StatusBar) {
       StatusBar.styleLightContent();
     }
-
+    
   });
 })
 

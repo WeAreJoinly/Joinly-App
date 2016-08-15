@@ -1,16 +1,18 @@
 angular.module('app.controllers', [])
 
-.controller('homeScreenCtrl', function($scope, $state, $ionicPopup, $cordovaOauth) {
+.controller('homeScreenCtrl', function($scope, $state) {
   //Init socket.io
   var socket = io('http://joinly.org/');
   socket.on('connect', function(){
     console.log('socket.io connection in homeScreenCtrl');
   });
+})
+
+.controller('signinCtrl', function($scope, $state, $ionicPopup, $cordovaOauth){
 
   var user = firebase.auth().currentUser;
   if (user) {
-
-    // User is signed in.
+    // User is signed in already.
     console.log('User already in with user id ' + user.uid);
     var uid = user.uid;
     database.ref('user/' + uid).on('value', function(snapshot) {
@@ -18,165 +20,83 @@ angular.module('app.controllers', [])
       if(user != null && user.ongoingQueue == true){
         //User has on going queue
         //Go to queue screen
-        $state.go('welcomeToTheQueue');
+        $state.go('inQueue');
+      }else{
+        $state.go('homeScreen');
       }
     });
+  }
 
-  } else {
-      // User is signed out.
-      $scope.userData = {};
-      var userData = $scope.userData;
-
-      function signInWithFacebook(){
-        //TODO
-        var accessRequestFacebook = [
-          "email",
-          "public_profile",
-          "user_friends",
-          "user_about_me",
-          "user_relationships",
-          "user_birthday",
-          "user_relationship_details",
-          "user_hometown",
-          "user_likes",
-          "user_religion_politics",
-          "user_location",
-          "user_education_history"
-        ];
-        $cordovaOauth.facebook("483531465189283", accessRequestFacebook).then(function(result) {
-            // results
-            var facebookAccessToken = result.access_token;
-            var FBCredential = firebase.auth.FacebookAuthProvider.credential(facebookAccessToken);
-            // Sign in with the credential from the Facebook user.
-            firebase.auth().signInWithCredential(FBCredential).catch(function(error) {
-              console.error(error);
-            });
-            firebase.auth().onAuthStateChanged(function(user) {
-              if (user) {
-                // User is signed in.
-                $ionicPopup.alert({
-                  title: "Success",
-                  template: "Now you're signed in!"
-                });
-              } else {
-                // User is signed out.
-                $ionicPopup.alert({
-                  title: "Error",
-                  template: "Something went wrong during login process",
-                  buttons: [
-                    {
-                      text: '<b>OK</b>',
-                      type: 'button-positive',
-                      onTap: function(e) {
-                        createNewAccount();
-                      }
-                    }
-                  ]
-                });
-              }
-            });
-        }, function(error) {
-            // error
-            console.error(error);
-            $ionicPopup.alert({
-              title: "Error",
-              template: "Failed to login with Facebook",
-              buttons: [
-                {
-                  text: '<b>OK</b>',
-                  type: 'button-positive',
-                  onTap: function(e) {
-                    createNewAccount();
-                  }
-                }
-              ]
-            });
+  $scope.userData = {};
+  var userData = $scope.userData;
+  $scope.signInBtn = function(){
+    if(userData.email != null && userData.email != ''){
+      if(userData.password != null && userData.password != ''){
+        firebase.auth().signInWithEmailAndPassword(userData.email, userData.password).catch(function(error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
         });
+        console.log(userData.email + " : " + userData.password);
+        loginProcessCallback();
       }
-
-      function createNewAccount(){
-        $ionicPopup.show({
-          template: '<input class="signUpPopup" type="text" ng-model="userData.name" placeholder="Name"><input class="signUpPopup" type="email" ng-model="userData.email" placeholder="Email"><input class="signUpPopup" type="password" ng-model="userData.password" placeholder="Password">',
-          title: 'Please Sign Up',
-          subTitle: 'Sign Up with email or Facebook',
-          scope: $scope,
-          cssClass: "popup-vertical-buttons",
-          buttons: [
-            {
-              text: '<b>Sign up</b>',
-              type: 'button-positive',
-              onTap: function(e) {
-                //TODO
-                //don't allow the user to close unless he enters needed data
-                e.preventDefault();
-              }
-            },
-            {
-              text: '<b>Use existing account</b>',
-              type: 'button-positive',
-              onTap: function(e) {
-                signInWithExistingAccount();
-              }
-            },
-            {
-              text: '<b>Facebook</b>',
-              onTap: function(e) {
-                //Sign in with Facebook
-                signInWithFacebook();
-              }
-            }
-          ]
+    }
+  }
+  $scope.facebookSignInBtn = function(){
+    signInWithFacebook();
+  }
+  function signInWithFacebook(){
+    //TODO
+    var accessRequestFacebook = [
+      "email",
+      "public_profile",
+      "user_friends",
+      "user_about_me",
+      "user_relationships",
+      "user_birthday",
+      "user_relationship_details",
+      "user_hometown",
+      "user_likes",
+      "user_religion_politics",
+      "user_location",
+      "user_education_history"
+    ];
+    $cordovaOauth.facebook("483531465189283", accessRequestFacebook).then(function(result) {
+        // results
+        var facebookAccessToken = result.access_token;
+        var FBCredential = firebase.auth.FacebookAuthProvider.credential(facebookAccessToken);
+        // Sign in with the credential from the Facebook user.
+        firebase.auth().signInWithCredential(FBCredential).catch(function(error) {
+          console.error(error);
         });
-      }// ---> End of createNewAccount()
-
-      function signInWithExistingAccount(){
-        $ionicPopup.show({
-          template: '<input class="signUpPopup" type="email" ng-model="userData.email" placeholder="Email"><input class="signUpPopup" type="password" ng-model="userData.password" placeholder="Password">',
-          title: 'Please Sign In',
-          subTitle: 'Sign In with email or Facebook',
-          scope: $scope,
-          cssClass: "popup-vertical-buttons",
-          buttons: [
-            {
-              text: '<b>Sign in</b>',
-              type: 'button-positive',
-              onTap: function(e) {
-                //TODO
-
-                //don't allow the user to close unless he enters needed data
-                e.preventDefault();
-              }
-            },
-            {
-              text: '<b>Create new account</b>',
-              type: 'button-positive',
-              onTap: function(e) {
-                createNewAccount();
-              }
-            },
-            {
-              text: '<b>Facebook</b>',
-              onTap: function(e) {
-                //Sign in with Facebook
-                signInWithFacebook();
-              }
-            }
-          ]
+        loginProcessCallback();
+    }, function(error) {
+        // error
+        console.error(error);
+        $ionicPopup.alert({
+          title: "Error",
+          template: "Failed to login with Facebook"
         });
-      } // ---> End of signInWithExistingAccount()
+    });
+  } //--> End of signInWithFacebook()
 
-      createNewAccount();
+  function loginProcessCallback(){
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        // User is signed in.
+        $state.go('homeScreen');
+      } else {
+        // User is signed out.
+        $ionicPopup.alert({title: "Error",template: "Wrong email, password or application failed during login process"});
+      }
+    });
   }
 })
 
 .controller('signupCtrl', function($scope, $state, $ionicPopup) {
-  var uid = firebase.auth().currentUser.uid;
   $scope.userData = {};
   var userData = $scope.userData;
 
-  $scope.facebookSignUpBtn = function(){
-    //TODO: Implement Facebook login
-  }
   $scope.signUpBtn = function(){
     //Validate data
     var dataFilled = true;
@@ -202,27 +122,38 @@ angular.module('app.controllers', [])
       dataFilled = false;
     }
     if(dataFilled){
-      //Copy old data
-      database.ref('user/'+uid).on('value', function(snapshot) {
-        var oldUserData = snapshot.val();
-        //Insert new data
-        database.ref('user/'+uid).set({
-          name: dataFilled.name,
-          email: dataFilled.email,
-          phone: dataFilled.phone,
-          city: dataFilled.city,
-          address: dataFilled.address,
-          zip: dataFilled.zip,
-          state: dataFilled.state,
-          ongoingQueue: oldUserData.ongoingQueue
-        });
+      //Sign up with email in firebase
+      firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
       });
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          // User is signed in.
+          //Copy old data
+          database.ref('user/'+uid).on('value', function(snapshot) {
+            var oldUserData = snapshot.val();
+            //Insert new data
+            database.ref('user/'+uid).set({
+              name: dataFilled.name,
+              email: dataFilled.email,
+              phone: dataFilled.phone,
+              city: dataFilled.city,
+              address: dataFilled.address,
+              zip: dataFilled.zip,
+              state: dataFilled.state,
+              ongoingQueue: oldUserData.ongoingQueue
+            });
 
-      $ionicPopup.alert({
-          title: 'Thank you!',
-          template: 'Congrats, now you are an official member of Joinly! Welcome on board! :)'
+            $state.go('homeScreen');
+
+          });
+        } else {
+          // User is signed out.
+          $ionicPopup.alert({title: "Error",template: "Application failed during sign up process"});
+        }
       });
-      $state.go('homeScreen');
     }else{
       $ionicPopup.alert({
           title: 'Error',
@@ -328,7 +259,7 @@ angular.module('app.controllers', [])
            var user = snapshot.val();
            if(user.mustLogin == null){
              //database.ref('user/' + uid + '/mustLogin').set(true); //TODO
-             $state.go('welcomeToTheQueue');
+             $state.go('inQueue');
            }
          });
        }else{

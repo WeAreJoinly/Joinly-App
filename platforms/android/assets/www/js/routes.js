@@ -13,36 +13,60 @@ angular.module('app.routes', [])
       .state('homeScreen', {
     url: '/home',
     templateUrl: 'templates/homeScreen.html',
+    nativeTransitions: {
+      "type": "flip",
+      "direction": "left"
+    },
     controller: 'homeScreenCtrl'
   })
 
   .state('signup', {
     url: '/signup',
     templateUrl: 'templates/signup.html',
+    nativeTransitions: {
+      "type": "flip",
+      "direction": "left"
+    },
     controller: 'signupCtrl'
   })
 
   .state('joinQueue', {
     url: '/joinQueue',
     templateUrl: 'templates/joinQueue.html',
+    nativeTransitions: {
+      "type": "flip",
+      "direction": "left"
+    },
     controller: 'joinQueueCtrl'
   })
 
   .state('welcomeToTheQueue', {
     url: '/queue',
     templateUrl: 'templates/welcomeToTheQueue.html',
+    nativeTransitions: {
+      "type": "flip",
+      "direction": "left"
+    },
     controller: 'queueCtrl'
   })
 
   .state('canYouPleaseRateTheService', {
     url: '/rate',
     templateUrl: 'templates/canYouPleaseRateTheService.html',
+    nativeTransitions: {
+      "type": "flip",
+      "direction": "left"
+    },
     controller: 'rateServiceCtrl'
   })
 
   .state('termsOfUse', {
     url: '/terms',
     templateUrl: 'templates/termsOfUse.html',
+    nativeTransitions: {
+      "type": "flip",
+      "direction": "left"
+    },
     controller: 'termsOfUseCtrl'
   })
 
